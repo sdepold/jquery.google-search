@@ -9,7 +9,8 @@
     "url": "git://github.com/sdepold/jquery.google-search.git"
   },
   "dependencies": {
-    "jquery.skeleton": "~0.1.5"
+    "jquery.skeleton": "~0.2.0",
+    "buster": "~0.5.0"
   },
   "devDependencies": {},
   "optionalDependencies": {},
