@@ -37,3 +37,7 @@ you to search on specific pages only:
     })
 
 ## View centric mode
+
+## License
+
+Hereby placed under MIT license.
