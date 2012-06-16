@@ -41,3 +41,4 @@ you to search on specific pages only:
 ## License
 
 Hereby placed under MIT license.
+
