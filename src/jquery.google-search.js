@@ -12,11 +12,17 @@
   // data centric methods //
   //////////////////////////
 
-  $.GoogleSearch = function() {
-    this.element = $('<div>')
-      .attr('id', 'search-results' + parseInt(Math.random() * 999999999))
-      .css('display', 'none')
-      .appendTo($('body'))
+  $.GoogleSearch = function() { }
+
+  $.GoogleSearch.prototype.getSearchContainer = function() {
+    if(!this.element) {
+      this.element = $('<div>')
+        .attr('id', 'search-results' + parseInt(Math.random() * 999999999))
+        // .css('display', 'none')
+        .appendTo($('body'))
+    }
+
+    return this.element
   }
 
   $.GoogleSearch.prototype.search = function(queryString, options, callback) {
@@ -31,10 +37,15 @@
           objects.push(extractDataFromResultEntry($(this)))
         })
 
-        cleanupHTML.call(self)
         callback && callback(objects)
       })
     })
+  }
+
+  $.GoogleSearch.prototype.cleanUp = function() {
+    this.getSearchContainer().remove()
+    $('.gstl_0.gssb_c').remove()
+    $('#private_metadata.gsc-snippet-metadata').parent().remove()
   }
 
   /////////////
@@ -69,11 +80,15 @@
   }
 
   var renderSearch = function(queryString, callback) {
-    var searchControl = new google.search.SearchControl()
+    var self = this
 
-    searchControl.addSearcher(new google.search.WebSearch())
-    searchControl.draw(this.element.get(0))
-    searchControl.execute(queryString)
+    if(!this.searchControl) {
+      this.searchControl = new google.search.SearchControl()
+      this.searchControl.addSearcher(new google.search.WebSearch())
+      this.searchControl.draw(this.getSearchContainer().get(0))
+    }
+
+    this.searchControl.execute(queryString)
 
     var intervalId = setInterval(function() {
       var renderedResults = $('.gs-webResult')
@@ -84,11 +99,6 @@
         callback && callback(renderedResults)
       }
     }, 250)
-  }
-
-  var cleanupHTML = function() {
-    this.element.remove()
-    $('.gstl_0 gssb_c').remove()
   }
 })(jQuery)
 
