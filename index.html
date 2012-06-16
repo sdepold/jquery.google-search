@@ -7,11 +7,17 @@
     <script type="text/javascript" src="src/jquery.google-search.js"></script>
     <script type="text/javascript">
       $(document).ready(function() {
-        new $.GoogleSearch().search('foo', {}, function(data) {
+        var search = new $.GoogleSearch()
+        search.search('foo', {}, function(data) {
           console.log(data)
+
+          search.search('foo', {}, function(data) {
+            console.log(data)
+          })
         })
       })
     </script>
   </head>
-  <body></body>
+  <body>
+  </body>
 </html>
