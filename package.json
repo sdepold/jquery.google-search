@@ -8,11 +8,11 @@
     "type": "git",
     "url": "git://github.com/sdepold/jquery.google-search.git"
   },
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
     "jquery.skeleton": "~0.5.0",
     "buster": "~0.5.0"
   },
-  "devDependencies": {},
   "optionalDependencies": {},
   "engines": {
     "node": "*"
