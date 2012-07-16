@@ -20,5 +20,5 @@
   "scripts": {
     "test": "java -jar dist/compiler.jar src/*.js --js_output_file=dist/jquery.`pwd|sed -e 's/.*jquery\\.//'`.min.js && node_modules/.bin/buster-test"
   },
-  "main": "lib/jquery.google-search.js"
+  "main": "src/jquery.google-search.js"
 }
