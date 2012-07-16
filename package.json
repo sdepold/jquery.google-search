@@ -2,7 +2,7 @@
   "author": "Sascha Depold <sascha@depold.com> (htp://depold.com)",
   "name": "jquery.google-search",
   "description": "Execute google searches within your client-side javascript.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "homepage": "https://github.com/sdepold/jquery.google-search",
   "repository": {
     "type": "git",
