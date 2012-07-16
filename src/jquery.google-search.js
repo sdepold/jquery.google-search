@@ -18,7 +18,7 @@
     if(!this.element) {
       this.element = $('<div>')
         .attr('id', 'search-results' + parseInt(Math.random() * 999999999))
-        // .css('display', 'none')
+        .css('display', 'none')
         .appendTo($('body'))
     }
 
