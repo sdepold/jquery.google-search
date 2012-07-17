@@ -12,18 +12,11 @@
   // data centric methods //
   //////////////////////////
 
-  $.GoogleSearch = function() { }
-
-  $.GoogleSearch.prototype.getSearchContainer = function() {
-    if(!this.element) {
-      this.element = $('<div>')
-        .attr('id', 'search-results' + parseInt(Math.random() * 999999999))
-        .css('display', 'none')
-        .appendTo($('body'))
-    }
-
-    return this.element
+  $.GoogleSearch = function() {
+    this.target = $('body')
   }
+
+  $.GoogleSearch.libsLoaded = false
 
   $.GoogleSearch.prototype.search = function(queryString, options, callback) {
     var self = this
@@ -43,7 +36,7 @@
   }
 
   $.GoogleSearch.prototype.cleanUp = function() {
-    this.getSearchContainer().remove()
+    getSearchContainer.call(this).remove()
     $('.gstl_0.gssb_c').remove()
     $('#private_metadata.gsc-snippet-metadata').parent().remove()
   }
@@ -54,11 +47,11 @@
 
   var waitForGoogleLibs = function(callback) {
     var interval = setInterval(function() {
-      if((typeof google !== 'undefined') && (typeof google.search !== 'undefined')) {
+      if ($.GoogleSearch.libsLoaded) {
         clearInterval(interval)
         callback && callback()
       }
-    }, 250)
+    }, 100)
   }
 
   var extractDataFromResultEntry = function($entry) {
@@ -80,15 +73,7 @@
   }
 
   var renderSearch = function(queryString, callback) {
-    var self = this
-
-    if(!this.searchControl) {
-      this.searchControl = new google.search.SearchControl()
-      this.searchControl.addSearcher(new google.search.WebSearch())
-      this.searchControl.draw(this.getSearchContainer().get(0))
-    }
-
-    this.searchControl.execute(queryString)
+    getSearchControl.call(this).execute(queryString)
 
     var intervalId = setInterval(function() {
       var renderedResults = $('.gs-webResult')
@@ -100,10 +85,37 @@
       }
     }, 250)
   }
-})(jQuery)
 
-// init google API lib + load search lib
-document.write('<script src="https://www.google.com/jsapi" type="text/javascript"></script>')
-document.write('<script type="text/javascript">')
-document.write("google.load('search', '1', { nocss: true, nooldnames: true, language: 'de' })")
-document.write("</script>")
+  var getSearchControl = function() {
+    if(!this.searchControl) {
+      this.searchControl = new google.search.SearchControl()
+      this.searchControl.addSearcher(new google.search.WebSearch())
+      this.searchControl.draw(getSearchContainer.call(this).get(0))
+    }
+
+    return this.searchControl
+  }
+
+  var getSearchContainer = function() {
+    if(!this.element) {
+
+      this.element = $('<div>')
+        .attr('id', 'search-results' + parseInt(Math.random() * 999999999))
+        .css('display', 'none')
+
+      this.target.append(this.element)
+    }
+
+    return this.element
+  }
+
+  var loadGoogleLibs = function(callback) {
+    $.getScript('https://www.google.com/jsapi').success(function() {
+      google.load('search', '1', { callback: callback })
+    })
+  }
+
+  loadGoogleLibs(function() {
+    $.GoogleSearch.libsLoaded = true
+  })
+})(jQuery)
