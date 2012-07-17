@@ -33,12 +33,16 @@
         callback && callback(objects)
       })
     })
+
+    return this
   }
 
   $.GoogleSearch.prototype.cleanUp = function() {
     getSearchContainer.call(this).remove()
     $('.gstl_0.gssb_c').remove()
     $('#private_metadata.gsc-snippet-metadata').parent().remove()
+
+    return this
   }
 
   /////////////

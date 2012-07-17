@@ -20,7 +20,10 @@
   "scripts": {
     "test": "npm run minify && npm run buster-test",
     "buster-test": "node_modules/.bin/buster-test",
-    "minify": "java -jar dist/compiler.jar src/*.js --js_output_file=dist/jquery.`pwd|sed -e 's/.*jquery\\.//'`.min.js"
+    "buster-capture": "(npm run buster-server &) && sleep 2 && npm run buster-capture-browser",
+    "minify": "java -jar dist/compiler.jar src/*.js --js_output_file=dist/jquery.`pwd|sed -e 's/.*jquery\\.//'`.min.js",
+    "buster-capture-browser": "type -P open &>/dev/null && open 'http://localhost:1111/capture' || firefox 'http://localhost:1111/capture'",
+    "buster-server": "node_modules/.bin/buster-server"
   },
   "main": "src/jquery.google-search.js"
 }
