@@ -10,15 +10,17 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "jquery.skeleton": "~0.5.0",
-    "buster": "~0.5.0"
+    "jquery.skeleton": "~0.6.0",
+    "buster": "~0.6.2"
   },
   "optionalDependencies": {},
   "engines": {
     "node": "*"
   },
   "scripts": {
-    "test": "java -jar dist/compiler.jar src/*.js --js_output_file=dist/jquery.`pwd|sed -e 's/.*jquery\\.//'`.min.js && node_modules/.bin/buster-test"
+    "test": "npm run minify && npm run buster-test",
+    "buster-test": "node_modules/.bin/buster-test",
+    "minify": "java -jar dist/compiler.jar src/*.js --js_output_file=dist/jquery.`pwd|sed -e 's/.*jquery\\.//'`.min.js"
   },
   "main": "src/jquery.google-search.js"
 }
