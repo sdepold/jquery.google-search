@@ -6,14 +6,10 @@
     <script type="text/javascript" src="lib/jquery-1.7.2.min.js"></script>
     <script type="text/javascript" src="src/jquery.google-search.js"></script>
     <script type="text/javascript">
-      $(document).ready(function() {
-        var search = new $.GoogleSearch()
-        search.search('foo', {}, function(data) {
+      $(function() {
+        var search = new $.GoogleSearch().search('foo', {}, function(data) {
           console.log(data)
-
-          search.search('foo', {}, function(data) {
-            console.log(data)
-          })
+          search.cleanUp()
         })
       })
     </script>
