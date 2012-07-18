@@ -1,23 +1,32 @@
-buster.testRunner.timeout = 10000
+buster.testRunner.timeout = 3000
 buster.spec.expose()
 
 describe('jquery.google-search', function() {
-
-
   describe('search', function() {
-    beforeAll(function() {
+    before(function() {
       this.googleSearch = new $.GoogleSearch()
     })
 
-    it("returns results which have the searched keyword included", function(done) {
-      console.log('fix empty result row')
+    after(function() {
+      this.googleSearch.cleanUp()
+    })
 
+    it("returns only results with content", function(done) {
       this.googleSearch.search('foo', {}, function(data) {
         data.forEach(function(row) {
-          if((row.url !== undefined) && (row.url !== 'undefined')) {
-            expect(row.description.toLowerCase().indexOf('foo')).not.toEqual(-1)
-          }
+          expect($.trim(row.content)).not.toEqual("")
         })
+
+        done()
+      })
+    })
+
+    it("returns results which have the searched keyword included", function(done) {
+      this.googleSearch.search('foo', {}, function(data) {
+        data.forEach(function(row) {
+          expect(row.content.toLowerCase().indexOf('foo')).not.toEqual(-1)
+        })
+
         done()
       })
     })
