@@ -24,6 +24,7 @@ describe('jquery.google-search', function() {
     it("returns results which have the searched keyword included", function(done) {
       this.googleSearch.search('foo', {}, function(data) {
         data.forEach(function(row) {
+          console.log(row)
           expect(row.content.toLowerCase().indexOf('foo')).not.toEqual(-1)
         })
 
