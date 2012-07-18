@@ -21,17 +21,21 @@
   $.GoogleSearch.prototype.search = function(queryString, options, callback) {
     var self = this
 
-    waitForGoogleLibs.call(this, function() {
-      var query   = buildQueryString.call(self, queryString, options)
-        , objects = []
+    waitForGoogleLibs.call(this, function(err) {
+      if(err) {
+        throw err
+      } else {
+        var query   = buildQueryString.call(self, queryString, options)
+          , objects = []
 
-      renderSearch.call(self, query, function(renderedResults) {
-        renderedResults.each(function() {
-          objects.push(extractDataFromResultEntry($(this)))
+        execSearch.call(self, query, function(err, results) {
+          if(err) {
+            throw err
+          } else {
+            callback && callback(results)
+          }
         })
-
-        callback && callback(objects)
-      })
+      }
     })
 
     return this
@@ -50,20 +54,18 @@
   /////////////
 
   var waitForGoogleLibs = function(callback) {
-    var interval = setInterval(function() {
+    var intervalId = setInterval(function() {
       if ($.GoogleSearch.libsLoaded) {
-        clearInterval(interval)
-        callback && callback()
+        clearTimeout(timeoutId)
+        clearInterval(intervalId)
+        callback && callback(null)
       }
     }, 100)
-  }
 
-  var extractDataFromResultEntry = function($entry) {
-    return {
-      title: $($('a.gs-title', $entry).get(0)).text(),
-      url: $($('a.gs-title', $entry).get(0)).attr('href'),
-      description: $('div.gs-bidi-start-align.gs-snippet', $entry).text()
-    }
+    var timeoutId = setTimeout(function() {
+      clearInterval(intervalId)
+      callback && callback(new Error('Timeout! Google libs aren\'t available!'))
+    }, 2000)
   }
 
   var buildQueryString = function(queryString, options) {
@@ -76,18 +78,19 @@
     return query.join(" ")
   }
 
-  var renderSearch = function(queryString, callback) {
+  var execSearch = function(queryString, callback) {
+    var timeoutId = null
+
+    google.search.WebSearch.RawCompletion = function(_, response) {
+      clearTimeout(timeoutId)
+      callback && callback(null, response.results)
+    }
+
+    timeoutId = setTimeout(function() {
+      callback(new Error('No rendered results found.'), null)
+    }, 2000)
+
     getSearchControl.call(this).execute(queryString)
-
-    var intervalId = setInterval(function() {
-      var renderedResults = $('.gs-webResult')
-        , objects         = []
-
-      if(renderedResults.length > 0) {
-        clearInterval(intervalId)
-        callback && callback(renderedResults)
-      }
-    }, 250)
   }
 
   var getSearchControl = function() {
